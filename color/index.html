@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <title>Muestreo de color</title>
+
+  <link rel="icon" href="data:,">
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
+
+</head>
+
+
+<body>
+
+<main id="escena">
+
+
+  <!-- CÁMARA -->
+
+  <video
+    id="camara"
+    autoplay
+    playsinline
+    muted
+  ></video>
+
+
+  <!--
+  Canvas invisible.
+
+  Aquí analizaremos
+  los píxeles de la cámara.
+  -->
+
+  <canvas
+    id="analisis"
+  ></canvas>
+
+
+  <!-- ZONA QUE ESTAMOS LEYENDO -->
+
+  <div id="muestra">
+
+    <div id="marco"></div>
+
+  </div>
+
+
+  <!-- ELEMENTO GRÁFICO -->
+
+  <div id="grafica"></div>
+
+
+  <!-- INFORMACIÓN -->
+
+  <div id="datos">
+
+    <span>
+      COLOR DEL ENTORNO
+    </span>
+
+    <strong id="color">
+      #000000
+    </strong>
+
+  </div>
+
+
+  <!-- INICIO -->
+
+  <section id="inicio">
+
+    <p>
+      PRUEBA 01
+    </p>
+
+    <h1>
+      CAPTURA<br>
+      EL COLOR
+    </h1>
+
+    <p>
+      Apunta hacia un objeto
+      o superficie.
+    </p>
+
+    <button id="iniciar">
+      INICIAR CÁMARA
+    </button>
+
+  </section>
+
+
+</main>
+
+
+<script src="./camera-color.js"></script>
+
+</body>
+
+</html>
