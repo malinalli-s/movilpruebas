@@ -1,56 +1,69 @@
-const video =
-  document.querySelector("#camara");
-
-const inicio =
-  document.querySelector("#inicio");
-
-const boton =
-  document.querySelector("#iniciar");
-
-const anguloTexto =
-  document.querySelector("#angulo");
+const video = document.querySelector("#camara");
+const inicio = document.querySelector("#inicio");
+const boton = document.querySelector("#iniciar");
+const anguloTexto = document.querySelector("#angulo");
 
 
 /* =========================================
-   OBJETOS DEL MUNDO
+   MUNDO GRÁFICO
 
    horizontal:
    izquierda (-) / derecha (+)
 
    vertical:
    arriba (-) / abajo (+)
+
+   profundidad:
+   0.5 = lejos
+   1   = medio
+   1.8 = cerca
 ========================================= */
 
 const objetos = [
 
   {
     elemento: document.querySelector(".objeto1"),
-    horizontal: -80,
-    vertical: -25
+
+    horizontal: -70,
+    vertical: -25,
+
+    profundidad: 0.5
   },
 
   {
     elemento: document.querySelector(".objeto2"),
-    horizontal: -40,
-    vertical: 20
+
+    horizontal: -35,
+    vertical: 20,
+
+    profundidad: 1
   },
 
   {
     elemento: document.querySelector(".objeto3"),
+
     horizontal: 0,
-    vertical: -35
+    vertical: -30,
+
+    profundidad: 1.8
   },
 
   {
     elemento: document.querySelector(".objeto4"),
-    horizontal: 55,
-    vertical: 10
+
+    horizontal: 50,
+    vertical: 15,
+
+    profundidad: 0.7
   },
 
   {
     elemento: document.querySelector(".objeto5"),
-    horizontal: 110,
-    vertical: -15
+
+    horizontal: 100,
+    vertical: -10,
+
+    profundidad: 1.5
   }
 
 ];
@@ -75,6 +88,7 @@ boton.addEventListener(
 async function iniciarExperiencia() {
 
   await iniciarCamara();
+
   await iniciarOrientacion();
 
 }
@@ -129,10 +143,6 @@ async function iniciarOrientacion() {
 
   try {
 
-    /*
-    iPhone / iPad
-    */
-
     if (
       typeof DeviceOrientationEvent !== "undefined" &&
       typeof DeviceOrientationEvent.requestPermission === "function"
@@ -172,7 +182,7 @@ async function iniciarOrientacion() {
 
 
 /* =========================================
-   CALIBRACIÓN
+   CALIBRAR
 ========================================= */
 
 function primeraLectura(evento) {
@@ -200,7 +210,7 @@ function primeraLectura(evento) {
 
 
 /* =========================================
-   ACTUALIZAR MUNDO
+   ACTUALIZAR
 ========================================= */
 
 function actualizarMundo(evento) {
@@ -215,10 +225,6 @@ function actualizarMundo(evento) {
     evento.beta || 0;
 
 
-  /*
-  Movimiento horizontal
-  */
-
   let giroHorizontal =
     alpha - alphaOrigen;
 
@@ -228,10 +234,6 @@ function actualizarMundo(evento) {
       giroHorizontal
     );
 
-
-  /*
-  Movimiento vertical
-  */
 
   const giroVertical =
     beta - betaOrigen;
@@ -257,7 +259,7 @@ function actualizarMundo(evento) {
 
 
 /* =========================================
-   DIBUJAR MUNDO
+   DIBUJAR
 ========================================= */
 
 function dibujarMundo(
@@ -272,21 +274,19 @@ function dibujarMundo(
     window.innerHeight;
 
 
-  /*
-  Campo visual aproximado.
-  */
+  const campoHorizontal =
+    70;
 
-  const campoHorizontal = 70;
-
-  const campoVertical = 90;
+  const campoVertical =
+    90;
 
 
   objetos.forEach(objeto => {
 
 
-    /* -------------------------
-       DIFERENCIA HORIZONTAL
-    ------------------------- */
+    /* -----------------------
+       POSICIÓN ANGULAR
+    ----------------------- */
 
     let diferenciaX =
 
@@ -300,21 +300,17 @@ function dibujarMundo(
       );
 
 
-    /* -------------------------
-       DIFERENCIA VERTICAL
-    ------------------------- */
-
     const diferenciaY =
 
       objeto.vertical -
       giroVertical;
 
 
-    /* -------------------------
-       ÁNGULO → PIXELES
-    ------------------------- */
+    /* -----------------------
+       ÁNGULO → PANTALLA
+    ----------------------- */
 
-    const x =
+    let x =
 
       (diferenciaX /
       campoHorizontal)
@@ -322,7 +318,7 @@ function dibujarMundo(
       * ancho;
 
 
-    const y =
+    let y =
 
       (diferenciaY /
       campoVertical)
@@ -330,20 +326,32 @@ function dibujarMundo(
       * alto;
 
 
-    /* -------------------------
+    /* =================================
+       PROFUNDIDAD
+
+       Los objetos cercanos reaccionan
+       más al movimiento.
+    ================================= */
+
+    x *= objeto.profundidad;
+
+    y *= objeto.profundidad;
+
+
+    /* -----------------------
        VISIBILIDAD
-    ------------------------- */
+    ----------------------- */
 
     const visibleHorizontal =
 
-      Math.abs(diferenciaX)
-      < campoHorizontal;
+      Math.abs(x)
+      < ancho * 0.75;
 
 
     const visibleVertical =
 
-      Math.abs(diferenciaY)
-      < campoVertical;
+      Math.abs(y)
+      < alto * 0.75;
 
 
     const visible =
@@ -352,14 +360,23 @@ function dibujarMundo(
       visibleVertical;
 
 
-    /* -------------------------
-       MOSTRAR
-    ------------------------- */
-
     if (visible) {
+
 
       objeto.elemento.style.display =
         "block";
+
+
+      /* -----------------------
+         ESCALA POR PROFUNDIDAD
+      ----------------------- */
+
+      const escala =
+
+        0.7 +
+
+        objeto.profundidad
+        * 0.35;
 
 
       objeto.elemento.style.transform = `
@@ -369,42 +386,77 @@ function dibujarMundo(
           calc(-50% + ${y}px)
         )
 
+        scale(${escala})
+
       `;
 
 
-      /*
-      Más cerca del centro =
-      más visible.
-      */
+      /* -----------------------
+         OPACIDAD
+      ----------------------- */
 
       const distancia =
 
         Math.sqrt(
 
-          diferenciaX *
-          diferenciaX
+          x * x +
 
-          +
-
-          diferenciaY *
-          diferenciaY
+          y * y
 
         );
 
 
-      const proximidad =
+      const distanciaMaxima =
+
+        Math.sqrt(
+
+          ancho * ancho +
+
+          alto * alto
+
+        );
+
+
+      const proximidadCentro =
+
+        1 -
+
+        distancia /
+        distanciaMaxima;
+
+
+      const opacidad =
 
         Math.max(
 
-          0.15,
+          0.2,
 
-          1 - distancia / 100
+          proximidadCentro
 
         );
 
 
       objeto.elemento.style.opacity =
-        proximidad;
+        opacidad;
+
+
+      /*
+      Blur muy ligero para
+      capas lejanas.
+      */
+
+      const blur =
+
+        objeto.profundidad < 0.8
+
+        ? 2
+
+        : 0;
+
+
+      objeto.elemento.style.filter =
+
+        `blur(${blur}px)`;
 
     }
 
