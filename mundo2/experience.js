@@ -1,3 +1,13 @@
+/* =========================================================
+   CARTEL MÓVIL
+   Exploración + señales + guía punteada
+========================================================= */
+
+
+/* =========================================================
+   ELEMENTOS HTML
+========================================================= */
+
 const video =
   document.querySelector("#camara");
 
@@ -16,10 +26,19 @@ const mensaje =
 const final =
   document.querySelector("#final");
 
+const ruta =
+  document.querySelector("#ruta");
 
-/* =====================================
+
+/* =========================================================
    SEÑALES DEL MUNDO
-===================================== */
+
+   horizontal:
+   izquierda (-) / derecha (+)
+
+   vertical:
+   arriba (-) / abajo (+)
+========================================================= */
 
 const senales = [
 
@@ -61,6 +80,10 @@ const senales = [
 ];
 
 
+/* =========================================================
+   VARIABLES GENERALES
+========================================================= */
+
 let alphaOrigen = 0;
 let betaOrigen = 0;
 
@@ -68,10 +91,12 @@ let encontradas = 0;
 
 let ultimoTiempo = 0;
 
+let calibrado = false;
 
-/* =====================================
+
+/* =========================================================
    INICIO
-===================================== */
+========================================================= */
 
 boton.addEventListener(
   "click",
@@ -88,9 +113,9 @@ async function iniciarExperiencia() {
 }
 
 
-/* =====================================
+/* =========================================================
    CÁMARA
-===================================== */
+========================================================= */
 
 async function iniciarCamara() {
 
@@ -128,18 +153,27 @@ async function iniciarCamara() {
       error
     );
 
+
+    mensaje.textContent =
+      "NO SE PUDO ABRIR LA CÁMARA";
+
   }
 
 }
 
 
-/* =====================================
+/* =========================================================
    ORIENTACIÓN
-===================================== */
+========================================================= */
 
 async function iniciarOrientacion() {
 
   try {
+
+    /*
+    En iPhone / iPad
+    necesitamos solicitar permiso.
+    */
 
     if (
       typeof DeviceOrientationEvent !==
@@ -160,7 +194,7 @@ async function iniciarOrientacion() {
       if (permiso !== "granted") {
 
         alert(
-          "Se necesita acceso a orientación."
+          "Se necesita acceso a la orientación."
         );
 
         return;
@@ -169,6 +203,11 @@ async function iniciarOrientacion() {
 
     }
 
+
+    /*
+    La primera lectura se usa
+    como posición inicial.
+    */
 
     window.addEventListener(
       "deviceorientation",
@@ -180,16 +219,19 @@ async function iniciarOrientacion() {
 
   catch (error) {
 
-    console.error(error);
+    console.error(
+      "Error orientación:",
+      error
+    );
 
   }
 
 }
 
 
-/* =====================================
+/* =========================================================
    CALIBRACIÓN
-===================================== */
+========================================================= */
 
 function calibrar(evento) {
 
@@ -200,12 +242,19 @@ function calibrar(evento) {
     evento.beta || 0;
 
 
+  calibrado = true;
+
+
   inicio.style.display =
     "none";
 
 
   ultimoTiempo =
     performance.now();
+
+
+  mensaje.textContent =
+    "SIGUE LA RUTA";
 
 
   window.addEventListener(
@@ -216,11 +265,14 @@ function calibrar(evento) {
 }
 
 
-/* =====================================
-   ACTUALIZACIÓN
-===================================== */
+/* =========================================================
+   ACTUALIZAR
+========================================================= */
 
 function actualizar(evento) {
+
+  if (!calibrado) return;
+
 
   const ahora =
     performance.now();
@@ -241,6 +293,10 @@ function actualizar(evento) {
     evento.beta || 0;
 
 
+  /* -------------------------
+     MOVIMIENTO HORIZONTAL
+  ------------------------- */
+
   let horizontal =
     alpha - alphaOrigen;
 
@@ -250,6 +306,10 @@ function actualizar(evento) {
       horizontal
     );
 
+
+  /* -------------------------
+     MOVIMIENTO VERTICAL
+  ------------------------- */
 
   const vertical =
     beta - betaOrigen;
@@ -264,9 +324,9 @@ function actualizar(evento) {
 }
 
 
-/* =====================================
-   DIBUJAR
-===================================== */
+/* =========================================================
+   DIBUJAR SEÑALES
+========================================================= */
 
 function dibujarSenales(
   horizontal,
@@ -281,6 +341,10 @@ function dibujarSenales(
     window.innerHeight;
 
 
+  /*
+  Campo visual aproximado.
+  */
+
   const campoHorizontal =
     65;
 
@@ -288,7 +352,28 @@ function dibujarSenales(
     80;
 
 
+  /*
+  Aquí guardaremos la posición
+  de la siguiente señal.
+  */
+
+  let siguienteSenal = null;
+
+
+  /*
+  Controlamos si estamos
+  cerca de alguna señal.
+  */
+
+  let haySenalCerca = false;
+
+
   senales.forEach(senal => {
+
+
+    /* -------------------------
+       IGNORAR ENCONTRADAS
+    ------------------------- */
 
     if (senal.encontrada) {
 
@@ -296,6 +381,10 @@ function dibujarSenales(
 
     }
 
+
+    /* -------------------------
+       DIFERENCIA HORIZONTAL
+    ------------------------- */
 
     let diferenciaX =
 
@@ -309,13 +398,19 @@ function dibujarSenales(
       );
 
 
+    /* -------------------------
+       DIFERENCIA VERTICAL
+    ------------------------- */
+
     const diferenciaY =
 
       senal.vertical -
       vertical;
 
 
-    /* ÁNGULO → PANTALLA */
+    /* -------------------------
+       ÁNGULO → PÍXELES
+    ------------------------- */
 
     const x =
 
@@ -333,7 +428,36 @@ function dibujarSenales(
       * alto;
 
 
-    /* ¿ESTÁ EN PANTALLA? */
+    /* =====================================================
+       ELEGIR SIGUIENTE SEÑAL
+
+       Tomamos la primera señal
+       que todavía no ha sido encontrada.
+    ===================================================== */
+
+    if (siguienteSenal === null) {
+
+      siguienteSenal = {
+
+        senal: senal,
+
+        x: x,
+        y: y,
+
+        diferenciaX:
+          diferenciaX,
+
+        diferenciaY:
+          diferenciaY
+
+      };
+
+    }
+
+
+    /* =====================================================
+       VISIBILIDAD
+    ===================================================== */
 
     const visible =
 
@@ -351,12 +475,23 @@ function dibujarSenales(
       senal.elemento.style.display =
         "none";
 
+
+      senal.elemento.classList.remove(
+        "cerca"
+      );
+
+
       senal.tiempo = 0;
+
 
       return;
 
     }
 
+
+    /* =====================================================
+       MOSTRAR SEÑAL
+    ===================================================== */
 
     senal.elemento.style.display =
       "flex";
@@ -372,9 +507,9 @@ function dibujarSenales(
     `;
 
 
-    /* =================================
-       DISTANCIA AL CENTRO
-    ================================= */
+    /* =====================================================
+       DISTANCIA ANGULAR AL CENTRO
+    ===================================================== */
 
     const distancia =
 
@@ -391,11 +526,14 @@ function dibujarSenales(
       );
 
 
-    /* =================================
-       CERCA
-    ================================= */
+    /* =====================================================
+       CERCA DEL CENTRO
+    ===================================================== */
 
     if (distancia < 12) {
+
+      haySenalCerca = true;
+
 
       senal.elemento.classList.add(
         "cerca"
@@ -407,16 +545,22 @@ function dibujarSenales(
 
 
       /*
-      Tiene que permanecer
-      aproximadamente 1 segundo.
+      Acumulamos tiempo.
       */
 
       senal.tiempo += delta;
 
 
+      /*
+      Después de 1 segundo:
+      señal encontrada.
+      */
+
       if (senal.tiempo > 1000) {
 
-        capturarSenal(senal);
+        capturarSenal(
+          senal
+        );
 
       }
 
@@ -431,22 +575,275 @@ function dibujarSenales(
 
       senal.tiempo = 0;
 
-
-      mensaje.textContent =
-        "EXPLORA EL ESPACIO";
-
     }
 
   });
 
+
+  /* =====================================================
+     RUTA PUNTEADA
+  ===================================================== */
+
+  if (
+    siguienteSenal &&
+    !haySenalCerca
+  ) {
+
+    dibujarRuta(
+
+      siguienteSenal.x,
+      siguienteSenal.y
+
+    );
+
+
+    ruta.style.display =
+      "block";
+
+
+    mensaje.textContent =
+      "SIGUE LA RUTA";
+
+  }
+
+  else {
+
+    /*
+    Cuando llegamos a la señal
+    quitamos la ruta.
+    */
+
+    ruta.style.display =
+      "none";
+
+  }
+
 }
 
 
-/* =====================================
-   CAPTURAR
-===================================== */
+/* =========================================================
+   DIBUJAR RUTA PUNTEADA
+========================================================= */
 
-function capturarSenal(senal) {
+function dibujarRuta(
+  x,
+  y
+) {
+
+  const ancho =
+    window.innerWidth;
+
+  const alto =
+    window.innerHeight;
+
+
+  /*
+  La mira está en el centro.
+  Como SVG usa viewBox 0 0 100 100:
+
+  centro = 50,50
+  */
+
+  const inicioX =
+    50;
+
+  const inicioY =
+    50;
+
+
+  /* =====================================================
+     CONVERTIR PÍXELES → SVG
+  ===================================================== */
+
+  let destinoX =
+
+    50 +
+
+    (x / ancho)
+    * 100;
+
+
+  let destinoY =
+
+    50 +
+
+    (y / alto)
+    * 100;
+
+
+  /* =====================================================
+     MANTENER DESTINO EN PANTALLA
+
+     Si la señal está fuera de pantalla,
+     la línea termina cerca del borde.
+
+     Esto funciona como indicación
+     de dirección.
+  ===================================================== */
+
+  destinoX =
+    limitar(
+      destinoX,
+      5,
+      95
+    );
+
+
+  destinoY =
+    limitar(
+      destinoY,
+      5,
+      95
+    );
+
+
+  /* =====================================================
+     CURVA
+
+     Punto inicial:
+          centro
+
+     Punto final:
+          dirección de la señal
+
+     El punto de control genera
+     una curva en vez de una línea recta.
+  ===================================================== */
+
+  const mitadX =
+
+    (
+      inicioX +
+      destinoX
+    )
+
+    / 2;
+
+
+  const mitadY =
+
+    (
+      inicioY +
+      destinoY
+    )
+
+    / 2;
+
+
+  /*
+  Curvatura.
+
+  Puedes cambiar 12 por:
+
+  5  = curva pequeña
+  20 = curva grande
+  30 = curva exagerada
+  */
+
+  const curvatura =
+    12;
+
+
+  /*
+  Calculamos un vector
+  perpendicular a la dirección.
+  */
+
+  const dx =
+    destinoX -
+    inicioX;
+
+
+  const dy =
+    destinoY -
+    inicioY;
+
+
+  const longitud =
+
+    Math.sqrt(
+
+      dx * dx +
+
+      dy * dy
+
+    ) || 1;
+
+
+  const perpendicularX =
+
+    -dy /
+    longitud;
+
+
+  const perpendicularY =
+
+    dx /
+    longitud;
+
+
+  const controlX =
+
+    mitadX +
+
+    perpendicularX *
+    curvatura;
+
+
+  const controlY =
+
+    mitadY +
+
+    perpendicularY *
+    curvatura;
+
+
+  /* =====================================================
+     CREAR PATH SVG
+  ===================================================== */
+
+  const path = `
+
+    M
+    ${inicioX}
+    ${inicioY}
+
+    Q
+    ${controlX}
+    ${controlY}
+
+    ${destinoX}
+    ${destinoY}
+
+  `;
+
+
+  ruta.setAttribute(
+    "d",
+    path
+  );
+
+}
+
+
+/* =========================================================
+   CAPTURAR SEÑAL
+========================================================= */
+
+function capturarSenal(
+  senal
+) {
+
+  /*
+  Evitar doble captura.
+  */
+
+  if (senal.encontrada) {
+
+    return;
+
+  }
+
 
   senal.encontrada =
     true;
@@ -457,18 +854,34 @@ function capturarSenal(senal) {
   );
 
 
+  senal.elemento.style.display =
+    "none";
+
+
   encontradas++;
 
 
   contador.textContent =
-    `${encontradas} / 3`;
+
+    `${encontradas} / ${senales.length}`;
 
 
   mensaje.textContent =
     "SEÑAL CAPTURADA";
 
 
-  if (encontradas === 3) {
+  ruta.style.display =
+    "none";
+
+
+  /* =====================================================
+     ¿TERMINAMOS?
+  ===================================================== */
+
+  if (
+    encontradas ===
+    senales.length
+  ) {
 
     setTimeout(
       mostrarFinal,
@@ -480,9 +893,9 @@ function capturarSenal(senal) {
 }
 
 
-/* =====================================
-   FINAL
-===================================== */
+/* =========================================================
+   CARTEL FINAL
+========================================================= */
 
 function mostrarFinal() {
 
@@ -493,25 +906,36 @@ function mostrarFinal() {
   mensaje.style.display =
     "none";
 
+
+  ruta.style.display =
+    "none";
+
 }
 
 
-/* =====================================
-   ÁNGULOS
-===================================== */
+/* =========================================================
+   NORMALIZAR ÁNGULOS
+
+   Evita problemas cuando alpha
+   pasa de 359° a 0°.
+========================================================= */
 
 function normalizarAngulo(
   angulo
 ) {
 
-  while (angulo > 180) {
+  while (
+    angulo > 180
+  ) {
 
     angulo -= 360;
 
   }
 
 
-  while (angulo < -180) {
+  while (
+    angulo < -180
+  ) {
 
     angulo += 360;
 
@@ -519,5 +943,29 @@ function normalizarAngulo(
 
 
   return angulo;
+
+}
+
+
+/* =========================================================
+   LIMITAR VALOR
+========================================================= */
+
+function limitar(
+  valor,
+  minimo,
+  maximo
+) {
+
+  return Math.min(
+
+    Math.max(
+      valor,
+      minimo
+    ),
+
+    maximo
+
+  );
 
 }
