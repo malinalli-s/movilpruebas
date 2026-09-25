@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <title>Prueba Parallax AR 2D</title>
+
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<main id="escena">
+
+  <!-- MUNDO REAL -->
+  <video
+    id="camara"
+    autoplay
+    playsinline
+    muted>
+  </video>
+
+
+  <!-- CAPAS GRÁFICAS -->
+
+  <!-- CAPA LEJANA -->
+  <div id="capa1" class="capa">
+    <div class="circulo circulo-grande"></div>
+  </div>
+
+
+  <!-- CAPA MEDIA -->
+  <div id="capa2" class="capa">
+    <div class="marco"></div>
+  </div>
+
+
+  <!-- CAPA CERCANA -->
+  <div id="capa3" class="capa">
+    <div class="punto"></div>
+  </div>
+
+
+  <!-- INTERFAZ FIJA -->
+  <div id="ui">
+
+    <h1>PARALLAX</h1>
+
+    <div class="datos">
+      <p>beta: <span id="beta">0</span>°</p>
+      <p>gamma: <span id="gamma">0</span>°</p>
+    </div>
+
+  </div>
+
+
+  <!-- PANTALLA INICIAL -->
+
+  <div id="inicio">
+
+    <h2>PRUEBA PARALLAX</h2>
+
+    <p>
+      Activa la cámara y después
+      inclina lentamente el teléfono.
+    </p>
+
+    <button id="iniciar">
+      INICIAR EXPERIENCIA
+    </button>
+
+  </div>
+
+</main>
+
+<script src="./parallax.js"></script>
+
+</body>
+</html>
