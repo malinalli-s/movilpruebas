@@ -20,12 +20,34 @@ const gammaTexto =
   document.querySelector("#gamma");
 
 
+let betaActual = 0;
+let gammaActual = 0;
+
+let betaOrigen = 0;
+let gammaOrigen = 0;
+
+let calibrado = false;
 let encontrado = false;
 
 
-/* ----------------------
-   INICIO
----------------------- */
+/* --------------------------
+   POSICIÓN DE LA SEÑAL
+-------------------------- */
+
+/*
+La señal estará desplazada
+respecto al punto inicial.
+
+Puedes cambiar estos valores.
+*/
+
+const objetivoX = 20;
+const objetivoY = -12;
+
+
+/* --------------------------
+   INICIAR
+-------------------------- */
 
 boton.addEventListener(
   "click",
@@ -42,9 +64,9 @@ async function iniciarExperiencia() {
 }
 
 
-/* ----------------------
+/* --------------------------
    CÁMARA
----------------------- */
+-------------------------- */
 
 async function iniciarCamara() {
 
@@ -72,7 +94,7 @@ async function iniciarCamara() {
   } catch (error) {
 
     console.error(
-      "Error de cámara:",
+      "Error cámara:",
       error
     );
 
@@ -81,9 +103,9 @@ async function iniciarCamara() {
 }
 
 
-/* ----------------------
+/* --------------------------
    ORIENTACIÓN
----------------------- */
+-------------------------- */
 
 async function iniciarOrientacion() {
 
@@ -97,11 +119,10 @@ async function iniciarOrientacion() {
       const permiso =
         await DeviceOrientationEvent.requestPermission();
 
-
       if (permiso !== "granted") {
 
         alert(
-          "Necesitamos acceso a la orientación."
+          "Se necesita acceso a orientación."
         );
 
         return;
@@ -113,11 +134,11 @@ async function iniciarOrientacion() {
 
     window.addEventListener(
       "deviceorientation",
-      actualizar
+      leerOrientacion
     );
 
 
-    inicio.style.display = "none";
+    mostrarCalibracion();
 
 
   } catch (error) {
@@ -129,90 +150,227 @@ async function iniciarOrientacion() {
 }
 
 
-/* ----------------------
-   INTERACCIÓN
----------------------- */
+/* --------------------------
+   LEER SENSOR
+-------------------------- */
 
-function actualizar(evento) {
+function leerOrientacion(evento) {
 
-  if (encontrado) return;
-
-
-  const beta =
+  betaActual =
     evento.beta || 0;
 
-  const gamma =
+  gammaActual =
     evento.gamma || 0;
 
 
   betaTexto.textContent =
-    beta.toFixed(1);
+    betaActual.toFixed(1);
 
   gammaTexto.textContent =
-    gamma.toFixed(1);
+    gammaActual.toFixed(1);
 
 
-  /*
-  Convertimos grados
-  en desplazamiento.
-  */
+  if (calibrado && !encontrado) {
 
-  const x =
-    limitar(gamma, -30, 30) * 6;
-
-  const y =
-    limitar(beta, -30, 30) * 4;
-
-
-  cursor.style.transform = `
-    translate(
-      calc(-50% + ${x}px),
-      calc(-50% + ${y}px)
-    )
-  `;
-
-
-  comprobarAlineacion(x, y);
-
-}
-
-
-/* ----------------------
-   REGLA
----------------------- */
-
-function comprobarAlineacion(x, y) {
-
-  const distancia =
-    Math.sqrt(
-      x * x +
-      y * y
-    );
-
-
-  /*
-  Si estamos suficientemente
-  cerca del centro...
-  */
-
-  if (distancia < 25) {
-
-    encontrado = true;
-
-    cursor.style.transform =
-      "translate(-50%, -50%) scale(1.7)";
-
-
-    revelacion.style.opacity = "1";
+    actualizarBusqueda();
 
   }
 
 }
 
 
-/* ----------------------
-   UTILIDAD
----------------------- */
+/* --------------------------
+   PANTALLA CALIBRACIÓN
+-------------------------- */
+
+function mostrarCalibracion() {
+
+  inicio.innerHTML = `
+
+    <h1>
+      ELIGE TU<br>
+      PUNTO DE PARTIDA
+    </h1>
+
+    <p>
+      Apunta el teléfono hacia
+      el frente y fija esta posición.
+    </p>
+
+    <button id="calibrar">
+      FIJAR POSICIÓN
+    </button>
+
+  `;
+
+
+  const botonCalibrar =
+    document.querySelector("#calibrar");
+
+
+  botonCalibrar.addEventListener(
+    "click",
+    calibrar
+  );
+
+}
+
+
+/* --------------------------
+   CALIBRAR
+-------------------------- */
+
+function calibrar() {
+
+  /*
+  Guardamos la orientación
+  actual del teléfono.
+  */
+
+  betaOrigen =
+    betaActual;
+
+  gammaOrigen =
+    gammaActual;
+
+
+  calibrado = true;
+
+
+  inicio.style.display =
+    "none";
+
+
+  console.log(
+    "Origen:",
+    betaOrigen,
+    gammaOrigen
+  );
+
+}
+
+
+/* --------------------------
+   BÚSQUEDA
+-------------------------- */
+
+function actualizarBusqueda() {
+
+  /*
+  Movimiento relativo
+  respecto al punto calibrado.
+  */
+
+  const diferenciaX =
+    gammaActual - gammaOrigen;
+
+  const diferenciaY =
+    betaActual - betaOrigen;
+
+
+  /*
+  Distancia angular entre
+  nuestra orientación actual
+  y la señal.
+  */
+
+  const errorX =
+    objetivoX - diferenciaX;
+
+  const errorY =
+    objetivoY - diferenciaY;
+
+
+  /*
+  Convertimos grados
+  a píxeles.
+  */
+
+  const x =
+    limitar(
+      errorX * 8,
+      -250,
+      250
+    );
+
+  const y =
+    limitar(
+      errorY * 8,
+      -400,
+      400
+    );
+
+
+  cursor.style.transform = `
+
+    translate(
+      calc(-50% + ${x}px),
+      calc(-50% + ${y}px)
+    )
+
+  `;
+
+
+  comprobarObjetivo(
+    errorX,
+    errorY
+  );
+
+}
+
+
+/* --------------------------
+   COMPROBAR OBJETIVO
+-------------------------- */
+
+function comprobarObjetivo(
+  errorX,
+  errorY
+) {
+
+  const distancia =
+    Math.sqrt(
+
+      errorX * errorX +
+
+      errorY * errorY
+
+    );
+
+
+  /*
+  Estamos a menos
+  de 3 grados.
+  */
+
+  if (distancia < 3) {
+
+    encontrado = true;
+
+
+    cursor.style.transform = `
+
+      translate(
+        -50%,
+        -50%
+      )
+
+      scale(1.8)
+
+    `;
+
+
+    revelacion.style.opacity =
+      "1";
+
+  }
+
+}
+
+
+/* --------------------------
+   LIMITAR
+-------------------------- */
 
 function limitar(
   valor,
