@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <title>Prueba AR 2D</title>
+
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <main id="escena">
+
+    <!-- CÁMARA -->
+    <video
+      id="camara"
+      autoplay
+      playsinline
+      muted>
+    </video>
+
+
+    <!-- CAPA GRÁFICA -->
+    <div id="grafica">
+
+      <div class="marco"></div>
+
+      <div class="circulo"></div>
+
+      <h1>
+        OBSERVA<br>
+        TU ENTORNO
+      </h1>
+
+      <p class="estado">
+        CÁMARA ACTIVA
+      </p>
+
+    </div>
+
+
+    <!-- INTERFAZ -->
+    <div id="inicio">
+
+      <p>
+        Esta experiencia utiliza
+        la cámara de tu dispositivo.
+      </p>
+
+      <button id="botonCamara">
+        INICIAR CÁMARA
+      </button>
+
+    </div>
+
+  </main>
+
+  <script src="./camera.js"></script>
+
+</body>
+</html>
