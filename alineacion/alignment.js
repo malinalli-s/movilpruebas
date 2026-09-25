@@ -285,20 +285,50 @@ function actualizarBusqueda() {
   Convertimos grados
   a píxeles.
   */
+const ancho =
+  window.innerWidth;
 
-  const x =
-    limitar(
-      errorX * 8,
-      -250,
-      250
-    );
+const alto =
+  window.innerHeight;
 
-  const y =
-    limitar(
-      errorY * 8,
-      -400,
-      400
-    );
+
+/*
+Convertimos el error angular
+en una posición proporcional
+a toda la pantalla.
+*/
+
+const rangoHorizontal = 30;
+const rangoVertical = 30;
+
+
+let x =
+  (errorX / rangoHorizontal)
+  * (ancho / 2);
+
+
+let y =
+  (errorY / rangoVertical)
+  * (alto / 2);
+
+
+/*
+Permitimos recorrer
+todo el viewport.
+*/
+
+x = limitar(
+  x,
+  -ancho / 2,
+  ancho / 2
+);
+
+y = limitar(
+  y,
+  -alto / 2,
+  alto / 2
+);
+ 
 
 
   cursor.style.transform = `
