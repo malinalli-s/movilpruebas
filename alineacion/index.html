@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <title>Prueba de alineación</title>
+
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<main id="escena">
+
+  <!-- CÁMARA -->
+  <video
+    id="camara"
+    autoplay
+    playsinline
+    muted>
+  </video>
+
+
+  <!-- OBJETIVO FIJO -->
+  <div id="objetivo">
+    <div class="objetivo-circulo"></div>
+    <span>ALINEA</span>
+  </div>
+
+
+  <!-- ELEMENTO CONTROLADO POR EL SENSOR -->
+  <div id="cursor"></div>
+
+
+  <!-- MENSAJE FINAL -->
+  <div id="revelacion">
+    <p>SEÑAL ENCONTRADA</p>
+  </div>
+
+
+  <!-- DATOS -->
+  <div id="datos">
+    <span>
+      β <strong id="beta">0</strong>°
+    </span>
+
+    <span>
+      γ <strong id="gamma">0</strong>°
+    </span>
+  </div>
+
+
+  <!-- INICIO -->
+  <div id="inicio">
+
+    <h1>ENCUENTRA<br>LA SEÑAL</h1>
+
+    <p>
+      Inclina el teléfono hasta
+      alinear los dos círculos.
+    </p>
+
+    <button id="iniciar">
+      INICIAR
+    </button>
+
+  </div>
+
+</main>
+
+<script src="./alignment.js"></script>
+
+</body>
+</html>
