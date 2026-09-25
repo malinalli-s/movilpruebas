@@ -32,9 +32,7 @@ body {
 }
 
 
-/* =====================
-   CÁMARA
-===================== */
+/* CÁMARA */
 
 #camara {
 
@@ -51,19 +49,14 @@ body {
 }
 
 
-/* Canvas invisible */
-
 #analisis {
-
   display: none;
 }
 
 
-/* =====================
-   VISOR
-===================== */
+/* TEXTO */
 
-#muestra {
+#texto {
 
   position: absolute;
 
@@ -73,35 +66,60 @@ body {
   transform:
     translate(-50%, -50%);
 
-  z-index: 4;
+  z-index: 3;
+
+  font-size: 18vw;
+
+  font-weight: 900;
+
+  line-height: 0.8;
+
+  letter-spacing: -0.08em;
+
+  white-space: nowrap;
+
+  pointer-events: none;
+
+  transition:
+    color 0.15s,
+    font-size 0.15s,
+    letter-spacing 0.15s;
+
+  mix-blend-mode: difference;
 }
 
 
-#marco {
+/* VISOR */
 
-  width: 90px;
-  height: 90px;
+#visor {
+
+  position: absolute;
+
+  left: 50%;
+  top: 68%;
+
+  transform:
+    translate(-50%, -50%);
+
+  z-index: 4;
+
+  width: 60px;
+  height: 60px;
 
   border:
-    2px solid white;
-
-  position: relative;
+    1px solid white;
 }
 
 
-/* pequeñas marcas */
-
-#marco::before {
-
-  content: "";
+#punto {
 
   position: absolute;
 
   left: 50%;
   top: 50%;
 
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 
   transform:
     translate(-50%, -50%);
@@ -112,79 +130,30 @@ body {
 }
 
 
-/* =====================
-   GRÁFICA
-===================== */
-
-#grafica {
-
-  position: absolute;
-
-  left: 50%;
-  top: 50%;
-
-  width: 45vw;
-  height: 45vw;
-
-  transform:
-    translate(-50%, -50%);
-
-  border-radius: 50%;
-
-  z-index: 2;
-
-  opacity: 0.55;
-
-  mix-blend-mode: screen;
-
-  pointer-events: none;
-
-  transition:
-    background-color 0.2s;
-}
-
-
-/* =====================
-   DATOS
-===================== */
+/* DATOS */
 
 #datos {
 
   position: absolute;
 
   left: 7%;
-  bottom: 7%;
+  bottom: 6%;
 
   z-index: 5;
 
   display: flex;
-  flex-direction: column;
 
-  gap: 5px;
+  gap: 20px;
 
   color: white;
-}
-
-
-#datos span {
-
-  font-size: 0.65rem;
-
-  letter-spacing: 0.2em;
-}
-
-
-#datos strong {
 
   font-family: monospace;
 
-  font-size: 1.4rem;
+  font-size: 0.8rem;
 }
 
 
-/* =====================
-   INICIO
-===================== */
+/* INICIO */
 
 #inicio {
 
@@ -228,7 +197,7 @@ body {
 
 #inicio > p {
 
-  max-width: 300px;
+  max-width: 280px;
 
   line-height: 1.5;
 }
