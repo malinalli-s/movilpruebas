@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <title>Ventana gráfica 360</title>
+
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<main id="escena">
+
+  <!-- MUNDO REAL -->
+  <video
+    id="camara"
+    autoplay
+    playsinline
+    muted>
+  </video>
+
+
+  <!-- MUNDO GRÁFICO -->
+  <div id="mundo">
+
+    <div class="objeto objeto1">
+      01
+    </div>
+
+    <div class="objeto objeto2">
+      BUSCA
+    </div>
+
+    <div class="objeto objeto3">
+      ✦
+    </div>
+
+    <div class="objeto objeto4">
+      SEÑAL
+    </div>
+
+    <div class="objeto objeto5">
+      ◉
+    </div>
+
+  </div>
+
+
+  <!-- MARCA CENTRAL -->
+  <div id="centro">
+    +
+  </div>
+
+
+  <!-- INFORMACIÓN -->
+  <div id="datos">
+
+    <span>
+      GIRO
+      <strong id="angulo">0</strong>°
+    </span>
+
+  </div>
+
+
+  <!-- INICIO -->
+  <div id="inicio">
+
+    <h1>
+      EXPLORA<br>
+      EL ESPACIO
+    </h1>
+
+    <p>
+      Gira físicamente para descubrir
+      los elementos que existen
+      a tu alrededor.
+    </p>
+
+    <button id="iniciar">
+      INICIAR
+    </button>
+
+  </div>
+
+</main>
+
+<script src="./world.js"></script>
+
+</body>
+</html>
