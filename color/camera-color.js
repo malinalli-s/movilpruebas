@@ -5,9 +5,21 @@ const canvas =
   document.querySelector("#analisis");
 
 const contexto =
-  canvas.getContext("2d", {
-    willReadFrequently: true
-  });
+  canvas.getContext(
+    "2d",
+    {
+      willReadFrequently: true
+    }
+  );
+
+const texto =
+  document.querySelector("#texto");
+
+const colorTexto =
+  document.querySelector("#color");
+
+const luzTexto =
+  document.querySelector("#luz");
 
 const boton =
   document.querySelector("#iniciar");
@@ -15,24 +27,18 @@ const boton =
 const inicio =
   document.querySelector("#inicio");
 
-const colorTexto =
-  document.querySelector("#color");
 
-const grafica =
-  document.querySelector("#grafica");
-
-
-/* ============================
+/* =========================
    INICIAR
-============================ */
+========================= */
 
 boton.addEventListener(
   "click",
-  iniciarCamara
+  iniciar
 );
 
 
-async function iniciarCamara() {
+async function iniciar() {
 
   try {
 
@@ -70,29 +76,18 @@ async function iniciarCamara() {
 
   catch (error) {
 
-    console.error(
-      "Error cámara:",
-      error
-    );
+    console.error(error);
 
   }
 
 }
 
 
-/* ============================
-   ANALIZAR CÁMARA
-============================ */
+/* =========================
+   ANALIZAR
+========================= */
 
 function analizar() {
-
-  /*
-  No necesitamos analizar
-  toda la cámara.
-
-  40 × 40 píxeles son
-  suficientes para esta prueba.
-  */
 
   const tamaño =
     40;
@@ -106,8 +101,8 @@ function analizar() {
 
 
   /*
-  Tomamos una zona del centro
-  del video.
+  Centro de la imagen
+  de la cámara.
   */
 
   const origenX =
@@ -143,10 +138,6 @@ function analizar() {
   );
 
 
-  /* ============================
-     LEER PÍXELES
-  ============================ */
-
   const imagen =
     contexto.getImageData(
 
@@ -163,21 +154,12 @@ function analizar() {
     imagen.data;
 
 
-  let rojo = 0;
-  let verde = 0;
-  let azul = 0;
+  let r = 0;
+  let g = 0;
+  let b = 0;
 
   let cantidad = 0;
 
-
-  /*
-  Cada píxel tiene:
-
-  R G B A
-
-  por eso avanzamos
-  de 4 en 4.
-  */
 
   for (
     let i = 0;
@@ -185,96 +167,207 @@ function analizar() {
     i += 4
   ) {
 
-    rojo +=
+    r +=
       pixeles[i];
 
-    verde +=
+    g +=
       pixeles[i + 1];
 
-    azul +=
+    b +=
       pixeles[i + 2];
-
 
     cantidad++;
 
   }
 
 
-  /* ============================
-     PROMEDIO
-  ============================ */
-
-  rojo =
+  r =
     Math.round(
-      rojo / cantidad
+      r / cantidad
+    );
+
+  g =
+    Math.round(
+      g / cantidad
+    );
+
+  b =
+    Math.round(
+      b / cantidad
     );
 
 
-  verde =
-    Math.round(
-      verde / cantidad
-    );
+  /* =========================
+     LUMINOSIDAD
+  ========================= */
+
+  const luminosidad =
+
+    0.2126 * r +
+
+    0.7152 * g +
+
+    0.0722 * b;
 
 
-  azul =
-    Math.round(
-      azul / cantidad
-    );
-
-
-  /* ============================
+  /* =========================
      HEX
-  ============================ */
+  ========================= */
 
-  const hexadecimal =
+  const hex =
     rgbAHex(
-
-      rojo,
-      verde,
-      azul
-
+      r,
+      g,
+      b
     );
 
-
-  /* ============================
-     MOSTRAR RESULTADO
-  ============================ */
 
   colorTexto.textContent =
-    hexadecimal;
+    hex;
 
 
-  grafica.style.backgroundColor =
+  luzTexto.textContent =
+
+    "LUZ " +
+
+    Math.round(
+      luminosidad
+    );
+
+
+  /* =========================
+     COLOR → TEXTO
+  ========================= */
+
+  texto.style.color =
 
     `rgb(
-      ${rojo},
-      ${verde},
-      ${azul}
+      ${r},
+      ${g},
+      ${b}
     )`;
 
 
-  /*
-  Repetimos aproximadamente
-  10 veces por segundo.
+  /* =========================
+     LUZ → ESCALA
+  ========================= */
 
-  No necesitamos 60 FPS
-  para analizar color.
+  /*
+  luminosidad:
+  0   = oscuro
+  255 = claro
+
+  Lo convertimos aproximadamente:
+
+  0   → 12vw
+  255 → 28vw
   */
 
+  const tamañoTexto =
+
+    mapear(
+
+      luminosidad,
+
+      0,
+      255,
+
+      12,
+      28
+
+    );
+
+
+  texto.style.fontSize =
+
+    `${tamañoTexto}vw`;
+
+
+  /* =========================
+     LUZ → ESPACIADO
+  ========================= */
+
+  /*
+  Oscuro:
+  letras más comprimidas.
+
+  Claro:
+  letras más abiertas.
+  */
+
+  const espaciado =
+
+    mapear(
+
+      luminosidad,
+
+      0,
+      255,
+
+      -0.12,
+      0.08
+
+    );
+
+
+  texto.style.letterSpacing =
+
+    `${espaciado}em`;
+
+
   setTimeout(
-
     analizar,
-
     100
+  );
+
+}
+
+
+/* =========================
+   MAPEAR
+========================= */
+
+function mapear(
+  valor,
+  minimoEntrada,
+  maximoEntrada,
+  minimoSalida,
+  maximoSalida
+) {
+
+  return (
+
+    minimoSalida +
+
+    (
+      (
+        valor -
+        minimoEntrada
+      )
+
+      /
+
+      (
+        maximoEntrada -
+        minimoEntrada
+      )
+    )
+
+    *
+
+    (
+      maximoSalida -
+      minimoSalida
+    )
 
   );
 
 }
 
 
-/* ============================
+/* =========================
    RGB → HEX
-============================ */
+========================= */
 
 function rgbAHex(
   r,
@@ -298,8 +391,6 @@ function rgbAHex(
 
       .join("")
 
-  )
-
-  .toUpperCase();
+  ).toUpperCase();
 
 }
