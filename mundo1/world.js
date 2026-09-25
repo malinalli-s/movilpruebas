@@ -11,49 +11,60 @@ const anguloTexto =
   document.querySelector("#angulo");
 
 
-/*
-Cada objeto vive en una
-dirección diferente del mundo.
-*/
+/* =========================================
+   OBJETOS DEL MUNDO
+
+   horizontal:
+   izquierda (-) / derecha (+)
+
+   vertical:
+   arriba (-) / abajo (+)
+========================================= */
 
 const objetos = [
 
   {
     elemento: document.querySelector(".objeto1"),
-    angulo: -120
+    horizontal: -80,
+    vertical: -25
   },
 
   {
     elemento: document.querySelector(".objeto2"),
-    angulo: -60
+    horizontal: -40,
+    vertical: 20
   },
 
   {
     elemento: document.querySelector(".objeto3"),
-    angulo: 0
+    horizontal: 0,
+    vertical: -35
   },
 
   {
     elemento: document.querySelector(".objeto4"),
-    angulo: 70
+    horizontal: 55,
+    vertical: 10
   },
 
   {
     elemento: document.querySelector(".objeto5"),
-    angulo: 140
+    horizontal: 110,
+    vertical: -15
   }
 
 ];
 
 
 let alphaOrigen = 0;
+let betaOrigen = 0;
 
 let calibrado = false;
 
 
-/* -----------------
+/* =========================================
    INICIO
------------------ */
+========================================= */
 
 boton.addEventListener(
   "click",
@@ -64,15 +75,14 @@ boton.addEventListener(
 async function iniciarExperiencia() {
 
   await iniciarCamara();
-
   await iniciarOrientacion();
 
 }
 
 
-/* -----------------
+/* =========================================
    CÁMARA
------------------ */
+========================================= */
 
 async function iniciarCamara() {
 
@@ -111,13 +121,17 @@ async function iniciarCamara() {
 }
 
 
-/* -----------------
-   SENSOR
------------------ */
+/* =========================================
+   ORIENTACIÓN
+========================================= */
 
 async function iniciarOrientacion() {
 
   try {
+
+    /*
+    iPhone / iPad
+    */
 
     if (
       typeof DeviceOrientationEvent !== "undefined" &&
@@ -157,14 +171,17 @@ async function iniciarOrientacion() {
 }
 
 
-/* -----------------
-   CALIBRAR
------------------ */
+/* =========================================
+   CALIBRACIÓN
+========================================= */
 
 function primeraLectura(evento) {
 
   alphaOrigen =
     evento.alpha || 0;
+
+  betaOrigen =
+    evento.beta || 0;
 
 
   calibrado = true;
@@ -182,9 +199,9 @@ function primeraLectura(evento) {
 }
 
 
-/* -----------------
-   ACTUALIZAR
------------------ */
+/* =========================================
+   ACTUALIZAR MUNDO
+========================================= */
 
 function actualizarMundo(evento) {
 
@@ -194,87 +211,150 @@ function actualizarMundo(evento) {
   const alpha =
     evento.alpha || 0;
 
+  const beta =
+    evento.beta || 0;
+
 
   /*
-  Diferencia respecto
-  al punto inicial.
+  Movimiento horizontal
   */
 
-  let giro =
+  let giroHorizontal =
     alpha - alphaOrigen;
 
 
+  giroHorizontal =
+    normalizarAngulo(
+      giroHorizontal
+    );
+
+
   /*
-  Corregimos el salto
-  359° → 0°.
+  Movimiento vertical
   */
 
-  giro =
-    normalizarAngulo(giro);
+  const giroVertical =
+    beta - betaOrigen;
 
 
   anguloTexto.textContent =
-    giro.toFixed(1);
+
+    giroHorizontal.toFixed(0)
+
+    + "° / "
+
+    + giroVertical.toFixed(0)
+
+    + "°";
 
 
-  dibujarMundo(giro);
+  dibujarMundo(
+    giroHorizontal,
+    giroVertical
+  );
 
 }
 
 
-/* -----------------
+/* =========================================
    DIBUJAR MUNDO
------------------ */
+========================================= */
 
-function dibujarMundo(giro) {
+function dibujarMundo(
+  giroHorizontal,
+  giroVertical
+) {
 
   const ancho =
     window.innerWidth;
 
+  const alto =
+    window.innerHeight;
+
 
   /*
-  Aproximamos el campo
-  visible horizontal.
-
-  70° significa que la pantalla
-  representa aproximadamente
-  70 grados del mundo.
+  Campo visual aproximado.
   */
 
-  const campoVision = 70;
+  const campoHorizontal = 70;
+
+  const campoVertical = 90;
 
 
   objetos.forEach(objeto => {
 
-    let diferencia =
-      objeto.angulo - giro;
+
+    /* -------------------------
+       DIFERENCIA HORIZONTAL
+    ------------------------- */
+
+    let diferenciaX =
+
+      objeto.horizontal -
+      giroHorizontal;
 
 
-    diferencia =
+    diferenciaX =
       normalizarAngulo(
-        diferencia
+        diferenciaX
       );
 
 
-    /*
-    Convertimos diferencia
-    angular en posición X.
-    */
+    /* -------------------------
+       DIFERENCIA VERTICAL
+    ------------------------- */
+
+    const diferenciaY =
+
+      objeto.vertical -
+      giroVertical;
+
+
+    /* -------------------------
+       ÁNGULO → PIXELES
+    ------------------------- */
 
     const x =
-      (diferencia / campoVision)
+
+      (diferenciaX /
+      campoHorizontal)
+
       * ancho;
 
 
-    /*
-    Visible si está cerca
-    de nuestra dirección.
-    */
+    const y =
+
+      (diferenciaY /
+      campoVertical)
+
+      * alto;
+
+
+    /* -------------------------
+       VISIBILIDAD
+    ------------------------- */
+
+    const visibleHorizontal =
+
+      Math.abs(diferenciaX)
+      < campoHorizontal;
+
+
+    const visibleVertical =
+
+      Math.abs(diferenciaY)
+      < campoVertical;
+
 
     const visible =
-      Math.abs(diferencia)
-      < campoVision;
 
+      visibleHorizontal &&
+      visibleVertical;
+
+
+    /* -------------------------
+       MOSTRAR
+    ------------------------- */
 
     if (visible) {
 
@@ -286,21 +366,41 @@ function dibujarMundo(giro) {
 
         translate(
           calc(-50% + ${x}px),
-          -50%
+          calc(-50% + ${y}px)
         )
 
       `;
 
 
       /*
-      Se vuelve más visible
-      al acercarse al centro.
+      Más cerca del centro =
+      más visible.
       */
 
+      const distancia =
+
+        Math.sqrt(
+
+          diferenciaX *
+          diferenciaX
+
+          +
+
+          diferenciaY *
+          diferenciaY
+
+        );
+
+
       const proximidad =
-        1 -
-        Math.abs(diferencia)
-        / campoVision;
+
+        Math.max(
+
+          0.15,
+
+          1 - distancia / 100
+
+        );
 
 
       objeto.elemento.style.opacity =
@@ -320,9 +420,9 @@ function dibujarMundo(giro) {
 }
 
 
-/* -----------------
-   ÁNGULOS
------------------ */
+/* =========================================
+   NORMALIZAR ÁNGULO
+========================================= */
 
 function normalizarAngulo(
   angulo
