@@ -1,0 +1,82 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background: #090414;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+#escena {
+  position: relative;
+  width: 100vw;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+#circulo {
+  position: absolute;
+
+  width: 100px;
+  height: 100px;
+
+  left: 50%;
+  top: 50%;
+
+  border-radius: 50%;
+
+  background: #ff3fa4;
+
+  transform: translate(-50%, -50%);
+
+  box-shadow:
+    0 0 30px #ff3fa4,
+    0 0 70px #7c3cff;
+}
+
+.datos {
+  position: absolute;
+
+  top: 5%;
+  left: 5%;
+
+  z-index: 10;
+}
+
+.datos h1 {
+  font-size: 1rem;
+  letter-spacing: 0.15em;
+}
+
+.datos p {
+  margin: 0.3rem 0;
+  font-family: monospace;
+}
+
+#iniciar {
+  position: absolute;
+
+  left: 50%;
+  bottom: 8%;
+
+  transform: translateX(-50%);
+
+  padding: 1rem 1.5rem;
+
+  border: 0;
+  border-radius: 100px;
+
+  background: white;
+  color: black;
+
+  font-weight: bold;
+}
