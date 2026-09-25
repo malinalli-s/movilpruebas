@@ -1,0 +1,381 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+
+  background: black;
+
+  font-family: Arial, sans-serif;
+}
+
+
+#escena {
+  position: relative;
+
+  width: 100vw;
+  height: 100dvh;
+
+  overflow: hidden;
+}
+
+
+/* =========================
+   CÁMARA
+========================= */
+
+#camara {
+  position: absolute;
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  z-index: 0;
+}
+
+
+/* Oscurecemos ligeramente
+   la cámara */
+
+#escena::after {
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 1;
+
+  pointer-events: none;
+
+  background:
+    rgba(0, 0, 0, 0.18);
+}
+
+
+/* =========================
+   MUNDO
+========================= */
+
+#mundo {
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 2;
+
+  pointer-events: none;
+}
+
+
+.senal {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: 100px;
+  height: 100px;
+
+  display: none;
+
+  align-items: center;
+  justify-content: center;
+
+  transform:
+    translate(-50%, -50%);
+
+  border: 2px solid white;
+
+  border-radius: 50%;
+
+  color: white;
+
+  font-size: 1.5rem;
+
+  font-weight: bold;
+
+  transition:
+    opacity 0.2s,
+    border 0.2s,
+    box-shadow 0.2s;
+}
+
+
+.senal.cerca {
+  border: 5px solid white;
+
+  box-shadow:
+    0 0 20px white,
+    0 0 80px white;
+}
+
+
+.senal.encontrada {
+  display: none !important;
+}
+
+
+/* =========================
+   MIRA
+========================= */
+
+#mira {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  transform:
+    translate(-50%, -50%);
+
+  z-index: 4;
+
+  pointer-events: none;
+}
+
+
+#mira div {
+  width: 35px;
+  height: 35px;
+
+  border: 1px solid white;
+
+  border-radius: 50%;
+
+  opacity: 0.7;
+}
+
+
+/* =========================
+   UI
+========================= */
+
+#ui {
+  position: absolute;
+
+  top: 5%;
+  left: 6%;
+  right: 6%;
+
+  z-index: 5;
+
+  display: flex;
+
+  justify-content: space-between;
+
+  color: white;
+
+  font-size: 0.75rem;
+
+  letter-spacing: 0.2em;
+}
+
+
+#ui p {
+  margin: 0;
+}
+
+
+#contador {
+  font-family: monospace;
+}
+
+
+/* =========================
+   MENSAJE
+========================= */
+
+#mensaje {
+  position: absolute;
+
+  left: 50%;
+  bottom: 8%;
+
+  transform:
+    translateX(-50%);
+
+  z-index: 5;
+
+  color: white;
+
+  font-size: 0.7rem;
+
+  letter-spacing: 0.25em;
+
+  white-space: nowrap;
+}
+
+
+/* =========================
+   FINAL
+========================= */
+
+#final {
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 8;
+
+  display: none;
+
+  overflow: hidden;
+
+  padding: 8%;
+
+  color: white;
+
+  background:
+    rgba(10, 0, 30, 0.72);
+
+  backdrop-filter:
+    blur(8px);
+}
+
+
+#final p {
+  margin-top: 5%;
+
+  font-size: 0.7rem;
+
+  letter-spacing: 0.25em;
+}
+
+
+#final h1 {
+  position: absolute;
+
+  left: 8%;
+  bottom: 10%;
+
+  z-index: 3;
+
+  margin: 0;
+
+  font-size:
+    clamp(2.5rem, 12vw, 5rem);
+
+  line-height: 0.82;
+}
+
+
+/* FORMAS DEL CARTEL */
+
+.forma {
+  position: absolute;
+
+  border-radius: 50%;
+}
+
+
+.forma1 {
+  width: 65vw;
+  height: 65vw;
+
+  right: -20%;
+  top: 15%;
+
+  border: 3px solid white;
+}
+
+
+.forma2 {
+  width: 40vw;
+  height: 40vw;
+
+  left: 10%;
+  top: 30%;
+
+  background:
+    rgba(255, 40, 150, 0.5);
+}
+
+
+.forma3 {
+  width: 15vw;
+  height: 15vw;
+
+  right: 20%;
+  top: 50%;
+
+  background: white;
+
+  box-shadow:
+    0 0 50px white;
+}
+
+
+/* =========================
+   INICIO
+========================= */
+
+#inicio {
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 10;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+
+  padding: 8%;
+
+  color: white;
+
+  background: #090414;
+}
+
+
+#inicio .numero {
+  font-size: 0.8rem;
+
+  letter-spacing: 0.3em;
+}
+
+
+#inicio h1 {
+  margin: 10px 0;
+
+  font-size:
+    clamp(3rem, 15vw, 6rem);
+
+  line-height: 0.78;
+}
+
+
+#inicio > p:not(.numero) {
+  max-width: 300px;
+
+  line-height: 1.5;
+}
+
+
+button {
+  width: fit-content;
+
+  margin-top: 20px;
+
+  padding: 16px 30px;
+
+  border: 0;
+  border-radius: 100px;
+
+  background: white;
+
+  font-weight: bold;
+}
