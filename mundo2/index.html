@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <title>Exploración gráfica</title>
+
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<main id="escena">
+
+  <!-- CÁMARA -->
+
+  <video
+    id="camara"
+    autoplay
+    playsinline
+    muted>
+  </video>
+
+
+  <!-- SEÑALES -->
+
+  <div id="mundo">
+
+    <div class="senal" id="senal1">
+      <span>01</span>
+    </div>
+
+    <div class="senal" id="senal2">
+      <span>02</span>
+    </div>
+
+    <div class="senal" id="senal3">
+      <span>03</span>
+    </div>
+
+  </div>
+
+
+  <!-- MIRA CENTRAL -->
+
+  <div id="mira">
+    <div></div>
+  </div>
+
+
+  <!-- INTERFAZ -->
+
+  <header id="ui">
+
+    <p>SEÑALES</p>
+
+    <div id="contador">
+      0 / 3
+    </div>
+
+  </header>
+
+
+  <!-- MENSAJES -->
+
+  <div id="mensaje">
+    EXPLORA EL ESPACIO
+  </div>
+
+
+  <!-- CARTEL FINAL -->
+
+  <section id="final">
+
+    <p>SEÑALES REUNIDAS</p>
+
+    <h1>
+      LO INVISIBLE<br>
+      TAMBIÉN<br>
+      OCUPA ESPACIO
+    </h1>
+
+    <div class="forma forma1"></div>
+    <div class="forma forma2"></div>
+    <div class="forma forma3"></div>
+
+  </section>
+
+
+  <!-- INICIO -->
+
+  <section id="inicio">
+
+    <p class="numero">
+      03
+    </p>
+
+    <h1>
+      ENCUENTRA<br>
+      LAS SEÑALES
+    </h1>
+
+    <p>
+      Explora tu entorno con el teléfono.
+      Encuentra tres señales ocultas.
+    </p>
+
+    <button id="iniciar">
+      INICIAR
+    </button>
+
+  </section>
+
+</main>
+
+
+<script src="./experience.js"></script>
+
+</body>
+</html>
