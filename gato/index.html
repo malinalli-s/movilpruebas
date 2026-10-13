@@ -1,0 +1,178 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Gato flubber · prueba de movimiento</title><style>
+*{box-sizing:border-box}body{margin:0;background:#fefefe;color:#171717;font-family:system-ui,sans-serif}main{max-width:1000px;margin:auto;padding:20px 24px}header{display:flex;align-items:center;justify-content:space-between;gap:20px}h1{font-size:20px;letter-spacing:-.6px;margin:0}small{font-size:11px;letter-spacing:2px}p{font-size:14px;color:#666}#stage{height:min(69vh,700px);border-top:5px solid #171717;position:relative;margin-top:24px;overflow:hidden;background:#fefefe}svg{width:100%;height:100%;display:block;touch-action:none;cursor:grab;user-select:none}svg:active{cursor:grabbing}.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center}button{background:#fff;border:1px solid #bbb;border-radius:24px;padding:12px 20px;cursor:pointer;font:inherit;font-size:14px}button:hover{background:#eee}button:focus-visible{outline:3px solid #8565df}label{font-size:13px;display:flex;gap:8px;align-items:center}#status{min-height:20px}footer{font-size:12px;color:#888;padding-top:18px}@media(max-width:500px){main{padding:18px 14px}small{font-size:9px}#stage{height:62vh}h1{font-size:18px}}
+
+/* The stage starts at the viewport ceiling; the information lives below it. */
+html,body{height:100%}main{max-width:none;margin:0;padding:0;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+#stage{margin:0;border:0;height:auto;min-height:180px;flex:1;position:relative;overflow:hidden}
+#stage svg{position:absolute;inset:0;width:100%;height:100%}
+.panel{flex:none;width:100%;max-width:1000px;margin:0 auto;padding:16px 24px max(16px,env(safe-area-inset-bottom));background:#fefefe}
+.panel p{margin:10px 0}footer{padding-top:12px}main{height:100vh;height:100dvh}
+@media(max-width:500px){main{padding:0}.panel{padding:12px 14px max(12px,env(safe-area-inset-bottom))}header{gap:8px;flex-wrap:wrap}.controls{gap:8px}button{padding:9px 13px}footer{font-size:10px}#stage{height:auto}}
+
+/* Full-screen drag surface; the bottom panel overlays it without blocking drags. */
+main{position:relative;justify-content:flex-end;isolation:isolate}
+#stage{position:absolute;inset:0;min-height:0;height:100%;width:100%;z-index:0}
+.panel{position:relative;z-index:1;pointer-events:none;background:rgba(254,254,254,.82)}
+.panel .controls{pointer-events:auto}
+@media(max-width:500px){#stage{height:100%}}
+
+.panel{max-width:100%;padding:14px 22px max(12px,env(safe-area-inset-bottom));background:linear-gradient(transparent,rgba(254,254,254,.93) 30%)}
+.panel header{max-width:920px;margin:auto}.panel>p,.controls{max-width:920px;margin-left:auto;margin-right:auto}.hint{font-size:12px}.panel #status{font-size:15px;color:#171717}#sensorStatus:empty{display:none}
+details{position:relative;font-size:13px}summary{cursor:pointer;padding:10px}.tools{position:absolute;bottom:45px;right:0;width:min(440px,85vw);max-height:55vh;overflow:auto;background:#fefefe;border:1px solid #ccc;border-radius:16px;padding:18px;box-shadow:0 8px 28px #0001;display:flex;gap:8px;flex-wrap:wrap}.tools p{line-height:1.5;font-size:12px}.tools label{padding:8px 0}
+@media(max-width:500px){.panel{padding:12px}.panel small{display:none}.hint{font-size:11px}.controls button{font-size:12px;padding:8px 11px}.controls{gap:5px}header h1{font-size:16px}.panel p{margin-top:6px;margin-bottom:6px}}
+</style><main><div id="stage">
+<svg id="Capa_1" data-name="Capa 1" xmlns="http://www.w3.org/2000/svg" viewBox="-39 0 720 850" preserveAspectRatio="xMidYMin meet" role="img" aria-label="Gato de moco elástico">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #010101;
+      }
+
+      .cls-2 {
+        fill: #fcfcfc;
+      }
+
+      .cls-3 {
+        fill: #fcfdfc;
+      }
+
+      .cls-4 {
+        fill: #fff;
+      }
+
+      .cls-5 {
+        fill: #fbfbfb;
+      }
+
+      .cls-6 {
+        fill: #fbfbfa;
+      }
+
+      .cls-7 {
+        fill: #fafaf9;
+      }
+
+      .cls-8 {
+        fill: #fefefe;
+      }
+
+      .cls-9 {
+        fill: #fdfdfd;
+      }
+    </style>
+  </defs>
+  <path id="cuerpo" class="cls-1" d="M0,0h642s-132.56,28.52-136.37,111.79c-3.31,72.4,15.77,144.46,52.13,208,17.79,37.54,31.45,80.83,18.45,123.71-10.07,33.21-32.23,43.1-63.52,52.67-75.62,23.13-158.36,33.93-237.02,43.54-41.43,5.06-82.67,7.97-124,1.78-51.61-9.32-85.62-36.73-105.69-85.45-15.65-37.98-12.07-71.08,16.04-101.84,8.19-8.51,16.24-16.93,24.14-25.28l23.02-43.39c15.01-25.22,68.88-79.33,60.97-73.84-6.58,4.57-12.4,10.03-18.11,15.63-1.36.87-2.04.25-2.69-1.05,6.04-16.38,31.73-78.91,35.34-112.16C195.03,18.92,123.49,12.62,0,0Z"/>
+  <path id="barba" class="cls-8" d="M390.41,516.46l-61.23,10.26c-24.21,3.75-47.7,7.31-72.45,8.97,19.87-4.68,37.6-13.21,53.49-26.04,10.67-8.62,22.16-15.05,34.62-20.59,12.49-5.2,25.48-6.48,38.79-3.96l19.61,5.54c16.58,5.88,32.94,10.25,50.88,13.43l-63.7,12.38Z"/>
+  <g id="ojo2">
+    <path class="cls-8" d="M303.09,418.31c-8.32,16.49-25.32,25.96-43.86,25.58,11.73-15.71,14.02-38.64,5.06-55.81l14.96.82c8.7.48,16.93,4.05,22.08,11.01,3.98,5.54,5.03,11.9,1.75,18.4Z"/>
+    <path class="cls-8" d="M222.57,441.71c-9.78-1.63-19.81-4.68-27.94-10.67-9.14-6.74-11.87-17.63-8.66-28.12,2.31-7.55,7.97-13.55,16.08-14.55l18.61-.41c-5.17,9.42-6.71,19.59-5.72,30.14.71,8.29,2.83,15.54,7.63,23.61Z"/>
+  </g>
+  <g id="ojo1">
+    <path class="cls-8" d="M428.47,421.73c-12.08.57-23.67-1.32-33.94-6.33-5.7-2.78-9.54-7.55-10.19-13.74-.65-6.13,1-12.19,4.36-17.24l31.3-7.89c-2.55,7.94-2.8,15.67-1.51,23.54,1.07,8.08,4.39,14.77,9.99,21.66Z"/>
+    <path class="cls-8" d="M466.23,414.02c2.11-5.95,4.25-11.13,4.07-17.28.5-10.92-2.52-21.52-8.95-30.15l12.58-2.89c5.36-1.23,10.3.54,13.93,4.69,7.76,8.86,7.65,21.55.37,30.98-5.6,6.65-12.71,11.72-21.99,14.65Z"/>
+  </g>
+  <path id="peinado" class="cls-9" d="M314.13,265.37c-.43-3.19-1.92-5.22-3.67-7.36l-5.7-6.99c-6.89,7-14.46,11.84-22.92,15.85-4.53,2.15-8.67,4.48-13.56,5.67-.68-.82-.32-1.86-.12-3-8.01,2.88-15.94,4.14-23.88,1.99,12.92.16,24.17-3.72,34.3-11.33l.37,4.04c9.03-5.46,17.01-11.72,24.74-18.77.5-.46,1.37-.78,1.81-.77s1.14.6,1.4,1.22c3.11,7.56,8.72,10.81,8.03,18.87,7.13-8.85,11.63-18.55,13.99-29.1.22-.99,1.34-1.93,1.97-2.18,3.55-1.44,18.6,17.38,14.63,28.49l14.22-1.16c7.8-.64,14.58-2.51,22.14-5.28-4.98,4.82-11.16,7.02-17.59,8.54l-12.01,1.75,1.26,2.49c-3.49.7-6.45-.29-9.73-.37-7.51-.19-.44-6.4-4-15.53-1.66-4.27-3.97-7.99-7.05-11.65-2.48,8.26-6.22,15.27-12.28,20.78-1.83,1.66-3.24,3.15-6.33,3.81Z"/>
+  <g id="bigotes2">
+    <path class="cls-3" d="M123.41,464.45c-3.28.52-7.62.81-10.66-.38,3.57.15,6.74-.58,10.75-.8l124.54-6.57c18.8-.99,36.83-1.53,55.88-.75-6.59,2.49-12.67,1.36-19.24,2.57-40.24,2.57-80.02,4.36-120.43,5.14l-40.85.79Z"/>
+    <path class="cls-9" d="M122.22,492.88c-.94.33-2.11.39-1.89-.69l48.7-7.98,73.32-11.17c20.96-3.19,41.42-6.52,62.48-7.16-14.54,3.97-28.27,6.13-42.88,8.11l-139.74,18.89Z"/>
+    <path class="cls-2" d="M169.69,514.11c-1.13.47-1.28-.02-.23-.76l60.91-17.8,63.53-17.21c4.58-1.24,8.7-2.1,13.41-2.21-8.39,3.96-16.31,6.39-25,8.73l-76.48,20.59-36.14,8.66Z"/>
+  </g>
+  <g id="bigotes1">
+    <path class="cls-2" d="M549.08,419.82c1.65-.17,1.97.11.96.84l-13.08,3.03-106.59,21.62-30.11,3.96c10.35-3.64,20.54-6.02,31.53-8.03l117.29-21.42Z"/>
+    <path class="cls-2" d="M540.19,445.54c.87-.3,6.95-.42,7.07-.09.08.22,0,.49-.12.77l-116.45,11.29c-8.34.81-15.8,1.42-24.2.4l35.67-5.05,98.03-7.33Z"/>
+    <path class="cls-5" d="M491.97,472.82l-41.99-1.1c-14.68-.38-28.81-.79-43.66-3.55l39.97-.59c26.88,1.03,53.23,2.16,79.81,5.19l-34.12.04Z"/>
+  </g>
+  <path id="nariz" class="cls-9" d="M361.93,456.46c-1.49,3.43-6.38,3-8.63.67-7.43-7.72-14.06-5.98-15.25-9.56-.27-.8-.12-2.61,1.24-2.99,8.67-2.4,17.52-3.52,26.55-3.73,1.4-.03,2.58.91,3.02,1.7.56,1.02.3,2.59-.59,3.46-3.02,2.96-4.57,6.37-6.34,10.44Z"/>
+  <path id="oreja" class="cls-9" d="M478.01,220.86c-12.26-7.11-35.72-18-47.53-12.84-16.69,7.29-34.43,30.17-46.88,45.11,1.59-8.22,6.27-14.29,10.32-20.9,7.03-10.43,15.36-19.77,25.72-26.81,7.93-5.38,16.52-7.23,25.94-5.39,23.58,4.59,46.55,18.74,62.09,36.86,2.43,2.84,4.76,5.66,5.51,9.81-11.29-9.6-22.42-18.46-35.17-25.84Z"/>
+  <path id="oreja-2" data-name="oreja" class="cls-6" d="M473.17,265.78c-7.76-6.71-15.44-13.13-24.4-18.15-3-1.68-5.98-2.44-9.68-1.98,4.61-5.67,15.94-.89,22.22,4.42,4.41,4.7,9.17,9.02,11.86,15.71Z"/>
+  <path id="mano1" class="cls-1" d="M473.86,554.99c-6.57-9.22-.53-19.79,8.66-26.03l13.2-8.73c7.72-5.1,13.16-12.09,17.07-20.33,26.64-7.61,51.53-17.8,63.44-44.46,22.79,16.02,25.41,50.51,14.55,75.21-12.95,29.46-43.98,40.42-74.95,39.39-14.27-.47-33.61-3.32-41.98-15.05Z"/>
+  <path id="mano2" class="cls-1" d="M235.91,581.77c1.17,12.69-6.22,22.94-17.98,26.88-8.83,2.96-17.85,2.8-27.4,1.74-21.92-3.89-42.66-12.98-59.99-26.94-15.91-13.16-25.65-31.65-26.09-53.14,36.21,17.97,76.33,20,116.57,18.03l7.73,12.64c3.87,6.33,6.43,13.07,7.15,20.79Z"/>
+  <g id="oreja2">
+    <path id="oreja-3" data-name="oreja" class="cls-7" d="M169.96,273.83c-9.27,7.19-17.44,14.7-25.3,23.36,2.01-6.01,5.85-10.74,9.57-15.65,5.1-6.72,14.8-14.33,21.41-9.65-2.02.76-3.96.61-5.68,1.94Z"/>
+    <g id="oreja-4" data-name="oreja">
+      <path class="cls-4" d="M109.17,285.31c15.01-25.22,35.94-48.52,58.71-66.96,13.03-10.55,16.26-8.54,28.14,2.09,13.44,12.83,25.86,26.61,37.25,41.34-10-18.95-23.89-37.58-41.27-50.63-7.99-6-13.76-5.3-21.86.32-6.58,4.57-12.4,10.03-18.11,15.63-25.83,26.37-42.86,58.21-42.86,58.21Z"/>
+    </g>
+  </g>
+</svg></div><section class="panel"><header><h1>Gato flubber</h1><small>UN MOCO CON PERSONALIDAD</small></header><p id="status" aria-live="polite">Hola. Acércate.</p><p class="hint">Acaricia la frente · Estira el cuerpo o las manos · Toca tres veces un costado</p><div class="controls"><button id="sound" aria-pressed="true">Sonido: sí</button><button id="dropButton">Una gotita</button><button id="sensors" aria-pressed="false">Activar movimiento</button><label><input type="checkbox" id="pause"> Pausar</label><details><summary>Explorar / ayuda</summary><div class="tools"><button id="hello">Saludar</button><button id="pet">Caricia</button><button id="tickle">Cosquillas</button><button id="dizzy">Probar mareo</button><button id="hide">Esconderse</button><button id="nap">Dormir</button><button id="reset">Reiniciar</button><label>Elasticidad <input id="soft" type="range" min="0" max="100" value="65" aria-label="Elasticidad del cuerpo"></label><p>Un toque saluda. Frota la frente lentamente para acariciar. Arrastra la parte inferior o una mano para estirarlas. Un gesto rápido hacia arriba lo esconde. Lleva la gotita a la nariz para que la absorba. Tras 12 segundos busca atención; después de 35 se duerme. Los botones permiten probar cada reacción con teclado.</p><p>Sonidos sintetizados: burbujas suaves y ronroneo electrónico. El movimiento del celular necesita un navegador compatible y HTTPS.</p></div></details></div><p id="sensorStatus" role="status"></p></section></main><script>
+'use strict';
+const $=s=>document.querySelector(s),svg=$('svg'),status=$('#status'),NS='http://www.w3.org/2000/svg';
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),mix=(a,b,t)=>a+(b-a)*t,smooth=t=>{t=clamp(t,0,1);return t*t*(3-2*t)};
+function node(tag,attrs,parent=svg){const n=document.createElementNS(NS,tag);for(const [k,v]of Object.entries(attrs))n.setAttribute(k,v);parent.appendChild(n);return n;}
+// Preserve the original two-part white eyes and add black pupils over a white bridge.
+const eyes=[{id:'ojo2',cx:244.85,cy:415.93,rx:59,ry:27},{id:'ojo1',cx:438.94,cy:392.57,rx:54,ry:27}];
+for(const e of eyes){const g=$('#'+e.id);e.white=node('ellipse',{cx:e.cx,cy:e.cy,rx:e.rx,ry:e.ry,fill:'#fefefe'},g);e.pupil=node('ellipse',{cx:e.cx,cy:e.cy,rx:17,ry:32,fill:'#010101'},g);}
+const paths=[...svg.querySelectorAll('path')].map(p=>{const len=p.getTotalLength(),n=Math.max(30,Math.ceil(len/2.6));return{p,id:p.id||p.parentElement.id,pts:Array.from({length:n},(_,i)=>{const q=p.getPointAtLength(len*i/n);return[q.x,q.y]})}});
+const fx=node('g',{'pointer-events':'none'}),stars=Array.from({length:3},()=>node('path',{d:'M0 -7L2 -2L7 0L2 2L0 7L-2 2L-7 0L-2 -2Z',fill:'#9982bd'},fx));
+const sleepText=node('text',{'font-size':22,fill:'#8b8194','font-family':'system-ui'},fx);sleepText.textContent='z z';
+const drop=node('path',{id:'drop',d:'M0 -21C-8 -10 -18 0 -16 9C-13 28 14 28 17 9C19 0 7 -10 0 -21Z',fill:'#9180ad',stroke:'#fefefe','stroke-width':2,tabindex:0,role:'button','aria-label':'Gotita: arrástrala hacia el gato'},svg);
+let t=0,last=0,x=0,y=0,vx=0,vy=0,tx=0,ty=0,ax=0,ay=0,vw=720,vh=1000,maxStretch=380;
+let drag=null,look={x:350,y:400,active:false},gazeX=0,gazeY=0,headX=0,pet=0,tickle=0,wave=0,dizzy=0,recover=0,hideUntil=0,hidden=0,sleep=0,attention=0,lastTouch=0,stretchSound=0,purrClock=0;
+const hands=[{x:0,y:0,vx:0,vy:0,tx:0,ty:0},{x:0,y:0,vx:0,vy:0,tx:0,ty:0}];
+let droplet={x:490,y:690,active:false,scale:1,dragging:false},sideTaps=[],soundOn=true,audio=null,sensorOn=false,sensorTimer=null,rotationEnergy=0,lastSensor=0,tilt=0,sensorSeen=false;
+const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;$('#pause').checked=reduced;
+function say(text){if(status.textContent!==text)status.textContent=text;}
+function wake(){lastTouch=t;sleep=0;attention=0;}
+function fit(){const b=$('#stage').getBoundingClientRect();if(!b.width||!b.height)return;const scale=Math.min(b.width/720,b.height/850);vw=b.width/scale;vh=b.height/scale;svg.setAttribute('viewBox',`${321-vw/2} 0 ${vw} ${vh}`);maxStretch=vh-616;droplet.x=clamp(droplet.x,321-vw/2+30,321+vw/2-30);droplet.y=clamp(droplet.y,100,vh-35);}
+new ResizeObserver(fit).observe($('#stage'));fit();
+function point(e){const p=new DOMPoint(e.clientX,e.clientY).matrixTransform(svg.getScreenCTM().inverse());return {x:p.x,y:p.y};}
+function map(a,b){const u=clamp(b/550,0,1),w=smooth(u),dw=b<550?6*u*(1-u)/550:0;const stretch=Math.max(.48,1+(y+Math.sin(t*1.7)*3)*dw),width=1/Math.sqrt(stretch);let X=321+(a-321)*width+(x+headX)*w+vx*.01*Math.sin(Math.PI*u),Y=b+(y+Math.sin(t*1.7)*3)*w;Y*=1-hidden*.87;return[X,Y];}
+function distance(a,b){return Math.hypot(a.x-b[0],a.y-b[1]);}
+function classify(p,target){if(target===drop&&droplet.active)return'drop';if(hidden>.3)return'wake';for(let i=0;i<2;i++){const q=map(i?170:535,i?566:515);if(distance(p,q)<65)return'hand'+i;}const face=map(345,380),head=map(345,295);if(Math.abs(p.x-head[0])<150&&Math.abs(p.y-head[1])<82)return'pet';if(Math.abs(p.x-face[0])>160&&Math.abs(p.x-face[0])<260&&Math.abs(p.y-face[1])<120)return'side';if(distance(p,map(335,440))<260)return'body';return'background';}
+function unlock(){if(!soundOn)return;try{if(!audio)audio=new(window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume().catch(()=>{});}catch{soundOn=false;$('#sound').textContent='Sonido no disponible';}}
+function sound(kind,strength=1){if(!soundOn||!audio||audio.state!=='running'||document.hidden||$('#pause').checked)return;const now=audio.currentTime,o=audio.createOscillator(),gain=audio.createGain(),filter=audio.createBiquadFilter();const settings={hello:[420,240,.28],stretch:[150,75,.15],pop:[270,95,.24],tickle:[480,300,.09],gulp:[140,65,.3],purr:[32,29,.5],wake:[220,380,.32]};const[f1,f2,dur]=settings[kind]||settings.pop;o.type=kind==='purr'?'triangle':'sine';filter.type='lowpass';filter.frequency.value=kind==='purr'?150:1200;o.frequency.setValueAtTime(f1,now);o.frequency.exponentialRampToValueAtTime(f2,now+dur);gain.gain.setValueAtTime(.001,now);gain.gain.linearRampToValueAtTime((kind==='purr'?.065:.09)*clamp(strength,.2,1),now+.025);gain.gain.exponentialRampToValueAtTime(.001,now+dur);o.connect(filter);filter.connect(gain);gain.connect(audio.destination);o.start(now);o.stop(now+dur+.02);o.onended=()=>{o.disconnect();filter.disconnect();gain.disconnect();};}
+function greet(){wake();hidden=0;hideUntil=0;wave=2.3;say('¡Hola!');sound('hello');}
+function tickleMe(){wake();tickle=1.5;say('¡Me haces cosquillas!');sound('tickle');}
+function hide(){wake();hideUntil=t+4;say('Me escondo… ¿sigues ahí?');sound('gulp');}
+function showDrop(){wake();droplet.active=true;droplet.scale=1;droplet.x=clamp(530,321-vw/2+40,321+vw/2-40);droplet.y=Math.min(vh-260,690);drop.style.display='';say('Acerca la gotita a mi nariz.');sound('pop');}
+function absorb(){droplet.active=false;droplet.dragging=false;pet=2;recover=1;vy+=35;wave=.6;lastTouch=t;say('¡Glup!');sound('gulp');}
+svg.addEventListener('pointerdown',e=>{if(drag||$('#pause').checked)return;unlock();const p=point(e),mode=classify(p,e.target);wake();if(mode==='wake'){hidden=0;hideUntil=0;sound('wake');return;}drag={id:e.pointerId,mode,start:p,last:p,startTime:t,bx:x,by:y,moved:0,travel:0,lastTime:t};svg.setPointerCapture(e.pointerId);if(mode==='drop')droplet.dragging=true;look={x:p.x,y:p.y,active:true};});
+svg.addEventListener('pointermove',e=>{const p=point(e);look={x:p.x,y:p.y,active:true};if(!drag||drag.id!==e.pointerId)return;wake();const dx=p.x-drag.start.x,dy=p.y-drag.start.y,step=Math.hypot(p.x-drag.last.x,p.y-drag.last.y),elapsed=Math.max(.016,t-drag.lastTime);drag.moved=Math.max(drag.moved,Math.hypot(dx,dy));drag.travel+=step;
+if(drag.mode==='pet'){if(step>1&&step/elapsed<1700){pet=Math.min(3,pet+step*.02);say('Mmm…');}if(Math.abs(dy)>85&&Math.abs(dy)>Math.abs(dx)*1.5)drag.mode='body';}
+if(drag.mode==='body'||drag.mode==='side'){tx=clamp(drag.bx+dx,-vw*.24,vw*.24);ty=clamp(drag.by+dy,-110,maxStretch);say(ty>150?'Qué laaargo…':'Estírame…');if(t-stretchSound>.17&&step>5){sound('stretch',step/30);stretchSound=t;}}
+if(drag.mode.startsWith('hand')){const h=hands[Number(drag.mode.slice(-1))];h.tx=clamp(dx,-170,170);h.ty=clamp(dy,-90,200);say('Una patita de moco.');}
+if(drag.mode==='drop'){droplet.x=clamp(p.x,321-vw/2+22,321+vw/2-22);droplet.y=clamp(p.y,30,vh-25);}
+drag.last=p;drag.lastTime=t;});
+function release(e){if(!drag||drag.id!==e.pointerId)return;const d=drag;drag=null;tx=ty=0;hands.forEach(h=>{h.tx=h.ty=0});droplet.dragging=false;if(e.type==='pointercancel'||e.type==='lostpointercapture')return;const dy=d.last.y-d.start.y,elapsed=t-d.startTime;
+if(d.mode==='drop'){if(distance(droplet,map(355,450))<115)absorb();return;}
+if(dy<-100&&elapsed<.6&&['body','side','pet'].includes(d.mode)){hide();return;}
+if(d.mode==='side'&&d.moved<10){sideTaps=sideTaps.filter(v=>t-v<1.2);sideTaps.push(t);if(sideTaps.length>=3){tickleMe();sideTaps=[];}else sound('pop',.5);return;}
+if(d.mode==='pet'&&d.travel>20){pet=Math.max(pet,1.5);sound('purr');return;}
+if(d.moved<10&&d.mode!=='background')greet();else if(d.moved>=10&&d.mode!=='background'){recover=2;sound('pop');say('¡Boing!');}}
+svg.addEventListener('pointerup',release);svg.addEventListener('pointercancel',release);svg.addEventListener('lostpointercapture',release);svg.addEventListener('pointerleave',()=>{if(!drag)look.active=false;});
+function bind(id,fn){$('#'+id).onclick=()=>{unlock();fn();};}
+bind('hello',greet);bind('dizzy',()=>{wake();dizzy=6;say('Un poco mareado…');sound('hello');});bind('pet',()=>{wake();pet=3;say('Mmm…');});bind('tickle',tickleMe);bind('hide',hide);bind('nap',()=>{lastTouch=t-40;say('Hora de una siesta.');});bind('dropButton',showDrop);
+function reset(){gazeX=gazeY=headX=0;look={x:350,y:400,active:false};x=y=vx=vy=tx=ty=pet=tickle=wave=dizzy=recover=hidden=sleep=attention=hideUntil=rotationEnergy=0;drag=null;hands.forEach(h=>{h.x=h.y=h.vx=h.vy=h.tx=h.ty=0});droplet.active=false;droplet.dragging=false;lastTouch=t;sideTaps=[];say('Hola. Acércate.');}
+bind('reset',reset);
+$('#sound').onclick=()=>{soundOn=!soundOn;$('#sound').textContent=soundOn?'Sonido: sí':'Sonido: no';$('#sound').setAttribute('aria-pressed',String(soundOn));if(soundOn){unlock();sound('pop');}else if(audio)audio.suspend().catch(()=>{});};
+$('#pause').onchange=()=>{if($('#pause').checked){drag=null;tx=ty=0;hands.forEach(h=>{h.tx=h.ty=0});droplet.dragging=false;if(audio)audio.suspend().catch(()=>{});}else unlock();};
+function disableSensors(){sensorOn=false;tilt=0;rotationEnergy=0;clearTimeout(sensorTimer);window.removeEventListener('devicemotion',motion);$('#sensors').textContent='Activar movimiento';$('#sensors').setAttribute('aria-pressed','false');}
+function motion(e){if(!sensorOn||document.hidden||$('#pause').checked)return;const r=e.rotationRate,a=e.accelerationIncludingGravity;if(!r||![r.alpha,r.beta,r.gamma].some(Number.isFinite))return;sensorSeen=true;const now=performance.now()/1000,dt=clamp(now-lastSensor,.01,.1);lastSensor=now;const speed=Math.hypot(r.alpha||0,r.beta||0,r.gamma||0);rotationEnergy=Math.max(0,rotationEnergy-dt*70)+Math.max(0,speed-45)*dt;if(a&&Number.isFinite(a.x))tilt=clamp(a.x*3,-28,28);if(rotationEnergy>220){dizzy=5;rotationEnergy=0;wake();say('Uf… quietito un momento.');}$('#sensorStatus').textContent='Movimiento activo. Inclina suavemente el celular.';}
+$('#sensors').onclick=async()=>{if(sensorOn){disableSensors();$('#sensorStatus').textContent='Movimiento desactivado.';return;}if(!window.isSecureContext){$('#sensorStatus').textContent='Para usar sensores, abre esta página mediante HTTPS. Puedes probar el mareo con el botón.';return;}const C=window.DeviceMotionEvent;if(!C){$('#sensorStatus').textContent='Este navegador no ofrece sensores. Usa Probar mareo.';return;}try{if(typeof C.requestPermission==='function'&&await C.requestPermission()!=='granted'){ $('#sensorStatus').textContent='Permiso no concedido. Puedes seguir jugando con el dedo.';return;}sensorOn=true;sensorSeen=false;lastSensor=performance.now()/1000;window.addEventListener('devicemotion',motion);$('#sensors').textContent='Desactivar movimiento';$('#sensors').setAttribute('aria-pressed','true');$('#sensorStatus').textContent='Esperando datos del celular…';sensorTimer=setTimeout(()=>{if(sensorOn&&!sensorSeen){disableSensors();$('#sensorStatus').textContent='No llegaron datos de movimiento. Usa Probar mareo.';}},4500);}catch{$('#sensorStatus').textContent='No se pudo activar el sensor. Usa Probar mareo.';}};
+document.addEventListener('visibilitychange',()=>{last=0;drag=null;tx=ty=0;hands.forEach(h=>{h.tx=h.ty=0});if(document.hidden&&audio)audio.suspend().catch(()=>{});});
+drop.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();unlock();absorb();}});
+svg.setAttribute('tabindex','0');svg.addEventListener('keydown',e=>{if(e.target!==svg)return;if(e.key==='Enter'||e.key===' '){e.preventDefault();unlock();greet();}});
+function frame(now){const dt=Math.min(last?(now-last)/1000:.016,.033);last=now;if(!document.hidden&&!$('#pause').checked){t+=dt;pet=Math.max(0,pet-dt*.65);tickle=Math.max(0,tickle-dt);wave=Math.max(0,wave-dt);dizzy=Math.max(0,dizzy-dt);recover=Math.max(0,recover-dt);const idle=t-lastTouch;
+sleep=mix(sleep,idle>35&&!droplet.active?1:0,Math.min(1,dt*1.2));attention=mix(attention,idle>12&&idle<30&&!droplet.active?1:0,dt*2);hidden=mix(hidden,t<hideUntil?1:0,dt*5);
+if(droplet.active){look={x:droplet.x,y:droplet.y,active:true};if(!droplet.dragging){droplet.x+=Math.sin(t*1.4)*dt*9;droplet.y+=Math.cos(t*1.7)*dt*6;}if(distance(droplet,map(355,450))<65)absorb();}
+const face=map(345,400),gx=look.active?clamp((look.x-face[0])/32,-15,15):0,gy=look.active?clamp((look.y-face[1])/35,-8,8):0;gazeX=mix(gazeX,gx,dt*9);gazeY=mix(gazeY,gy,dt*9);headX=mix(headX,gx*.6,dt*2);
+const softness=Number($('#soft').value)/100,targetX=tx+tilt+(dizzy?Math.sin(t*6)*25*Math.min(dizzy,1):0)+(tickle?Math.sin(t*28)*9:0)+(droplet.active?clamp((droplet.x-face[0])*.13,-45,45):0),targetY=ty+attention*20+(sleep?Math.sin(t*1.5)*sleep*6:0);
+const stiffness=drag?95:48-softness*20,damping=drag?15:5.2-softness*2.8;ax=(targetX-x)*stiffness-vx*damping;ay=(targetY-y)*stiffness-vy*damping;vx+=ax*dt;vy+=ay*dt;x+=vx*dt;y+=vy*dt;
+// Stop extreme compression from folding the neck inside out on tall screens.
+if(y<-165){y=-165;vy=Math.max(0,-vy*.25);}
+hands.forEach((h,i)=>{const waving=i===0&&wave>0?Math.sin(wave*10)*24*Math.sin(Math.PI*wave/2.3):0;const seeking=attention&&i===0?Math.sin(t*3)*6+12:0;const hx=h.tx+clamp(-ax*.022+waving+seeking,-30,30),hy=h.ty+clamp(-ay*.022,-22,25);h.vx+=((hx-h.x)*55-h.vx*12)*dt;h.vy+=((hy-h.y)*50-h.vy*11)*dt;h.x+=h.vx*dt;h.y+=h.vy*dt;});
+if(pet>0&&t-purrClock>.65){sound('purr',pet/2);purrClock=t;}if(tickle&&t-stretchSound>.17){sound('tickle',.5);stretchSound=t;}
+if(!drag&&!wave&&!dizzy&&!tickle&&!pet&&!recover&&!droplet.active){if(hidden>.6)say('Me escondo… ¿sigues ahí?');else if(sleep>.8)say('Zzz…');else if(attention>.5)say('¿Una caricia?');else say('Hola. Acércate.');}
+}
+render();requestAnimationFrame(frame);}
+function eyeOpen(){const blink=t%4.7>4.52?.08:1;return Math.max(.06,blink*(1-sleep*.94)*(1-clamp(pet/2,0,1)*.78)*(tickle?.45:1));}
+function render(){const opening=eyeOpen(),surprise=clamp(y/Math.max(220,maxStretch),0,1);
+for(const {p,id,pts}of paths){if(id==='ojo1'||id==='ojo2'){p.style.display='none';continue;}const d=pts.map(([ox,oy],i)=>{let a=ox,b=oy;
+if(id==='mano1'||id==='mano2'){const right=id==='mano1',h=hands[right?0:1],rootY=right?455:530,rootX=right?561.07:168.07,falloff=smooth((oy-rootY)/(right?115:81));a+=h.x*falloff;b+=h.y*falloff;a=rootX+(a-rootX)*(1-clamp(h.y/420,-.12,.22)*falloff);}
+if(id==='barba'){const c=355,z=clamp(pet/2,0,1);a=c+(a-c)*(1-z*.13+surprise*.12);b=510+(b-510)*(1-z*.38+surprise*.35)+(tickle?Math.sin(t*30+ox*.035)*3:0)+(dizzy?Math.sin(t*7)*3:0);}
+if(id.startsWith('bigotes')){const root=id==='bigotes1'?404:306,sign=id==='bigotes1'?1:-1,dist=(ox-root)/150;b+=dist*sign*(-clamp(pet/2,0,1)*12+surprise*13)+(tickle?Math.sin(t*24+ox*.04)*4:0)+(dizzy?Math.sin(t*8+ox*.02)*3:0);}
+let [X,Y]=map(a,b);if(id==='cuerpo'){const attachment=1-smooth(oy/140);X+=(ox-321)*(vw/642-1)*attachment;}return(i?'L':'M')+X.toFixed(2)+','+Y.toFixed(2);}).join('')+'Z';p.setAttribute('d',d);}
+for(const e of eyes){const [cx,cy]=map(e.cx,e.cy);const sx=(map(e.cx+e.rx,e.cy)[0]-cx)/e.rx,sy=(1-hidden*.87);const open=opening*(1+surprise*.28);e.white.setAttribute('cx',cx);e.white.setAttribute('cy',cy);e.white.setAttribute('rx',e.rx*Math.max(.5,sx));e.white.setAttribute('ry',e.ry*open*sy);e.pupil.setAttribute('cx',cx+(gazeX+(dizzy?Math.sin(t*12+(e.id==='ojo1'?0:2))*5:0))*sx);e.pupil.setAttribute('cy',cy+gazeY*open*sy*.35);e.pupil.setAttribute('rx',(dizzy?12:17-surprise*5)*Math.max(.5,sx));e.pupil.setAttribute('ry',e.ry*open*sy);}
+const [fxX,fxY]=map(350,190);stars.forEach((n,i)=>{const a=t*3+i*Math.PI*2/3;n.style.display=dizzy?'':'none';n.setAttribute('transform',`translate(${fxX+Math.cos(a)*75} ${fxY+Math.sin(a)*16}) rotate(${t*55})`);});sleepText.setAttribute('x',map(515,300)[0]);sleepText.setAttribute('y',map(515,300)[1]-Math.sin(t)*6);sleepText.style.opacity=String(sleep);drop.style.display=droplet.active?'':'none';drop.setAttribute('transform',`translate(${droplet.x} ${droplet.y}) rotate(${Math.sin(t*2)*8})`);}
+requestAnimationFrame(frame);
+
+</script></html>
